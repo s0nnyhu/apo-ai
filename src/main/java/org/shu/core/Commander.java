@@ -3,6 +3,8 @@ package org.shu.core;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
@@ -12,17 +14,25 @@ import java.util.logging.Logger;
 
 public class Commander implements NativeKeyListener {
 
+    static {
+        init();
+    }
+
+    private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
     private boolean isAltKeyPressed;
     private boolean isQKeyPressed;
     private boolean isRecording;
     private Recorder recorder;
-
     private ElevenlabsClient elevenlabsClient;
     private ChatGPT chatGPT;
+    private Player player;
 
-    Player player;
+    private static void init() {
+        PropertyConfigurator.configure("log4j.properties");
+    }
 
     public Commander() {
+        logger.info("Commander initialized");
         this.isRecording = false;
         isAltKeyPressed = false;
         isQKeyPressed = false;
@@ -37,10 +47,8 @@ public class Commander implements NativeKeyListener {
             GlobalScreen.registerNativeHook();
             GlobalScreen.addNativeKeyListener(this);
         } catch (Exception e) {
-            System.out.println("Failed loading global native hook: " + e);
+            logger.error("Failed loading global native hook: " + e);
         }
-
-        System.out.println(isRecording);
     }
 
     @Override
@@ -56,7 +64,7 @@ public class Commander implements NativeKeyListener {
             // Perform your desired action here
             if (!isRecording) {
                 isRecording = true;
-                System.out.println("start recording");
+                logger.info("Start recording");
                 recorder.startRecording();
             }
 
@@ -71,7 +79,7 @@ public class Commander implements NativeKeyListener {
             // Reset the flag since Alt key is released
             isAltKeyPressed = false;
             isRecording = false;
-            System.out.println("stop recording");
+            logger.info("Stop recording");
             recorder.stopRecording();
             try {
                 Thread.sleep(1000);
@@ -80,8 +88,6 @@ public class Commander implements NativeKeyListener {
             }
             String request = Whisper.transcribe("recording.wav --model medium --language en --device cuda");
 
-            TTS.toAudio("Your demand has been transcribed");
-            player.play("speech.wav");
 //            request = request.split("\n")[2];
 
 
@@ -93,9 +99,6 @@ public class Commander implements NativeKeyListener {
             JsonObject firstChoice = choices.get(0).getAsJsonObject();
             JsonObject message = firstChoice.getAsJsonObject("message");
             String content = message.get("content").getAsString();
-
-            TTS.toAudio("Your demand has been processed by chat GPT");
-            player.play("speech.wav");
 
             //Format GPT response to be readable
 //            content = content.replaceAll("\"", " ");

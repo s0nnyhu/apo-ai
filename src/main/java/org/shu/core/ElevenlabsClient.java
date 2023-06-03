@@ -34,7 +34,7 @@ public class ElevenlabsClient {
         try {
             response = HTTPClient.get(String.format("%s%s", API_ENDPOINT, "v1/models"), headers);
         } catch (Exception e) {
-            System.out.println("Error occured: " + e);
+            System.out.println("[ElevenlabsClient] Error occured: " + e);
         }
         return response;
     }
@@ -44,7 +44,7 @@ public class ElevenlabsClient {
         try {
             response = HTTPClient.get(String.format("%s%s", API_ENDPOINT, "v1/voices"), headers);
         } catch (Exception e) {
-            System.out.println("Error occured: " + e);
+            System.out.println("[ElevenlabsClient] Error occured: " + e);
         }
         return response;
     }

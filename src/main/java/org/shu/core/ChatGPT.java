@@ -10,7 +10,7 @@ import java.util.Map;
 public class ChatGPT {
     Dotenv dotenv = Dotenv.load();
     private String API_ENDPOINT = dotenv.get("API_ENDPOINT_CHATGPT");
-    private String API_TOKEN = dotenv.get("API_ENDPOINT_CHATGPT");
+    private String API_TOKEN = dotenv.get("API_TOKEN_CHATGPT");
     private String PROMPT = "You are an helpful assistant.";
     private String MODEL = "gpt-3.5-turbo";
 
@@ -37,10 +37,9 @@ public class ChatGPT {
 
         String response = null;
         try {
-            System.out.println(body);
             response = HTTPClient.post(String.format("%s/v1/chat/completions", API_ENDPOINT), body, headers);
         } catch (Exception e) {
-            System.out.println("Error occured");
+            System.out.println("[ChatGPT] Error occured " + e);
         }
         return response;
     }
