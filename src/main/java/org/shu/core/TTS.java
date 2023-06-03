@@ -1,5 +1,7 @@
 package org.shu.core;
 
+import org.apache.log4j.LogManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,14 +9,20 @@ import java.io.InputStreamReader;
 
 public class TTS {
 
+    static {
+        Log4j.init();
+    }
+
+    private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
 
     public static void toAudio(String text) {
         String cleanedText = text.replace("\"", "\\\"").replace("\n", "");
         System.out.println(cleanedText);
         String command = "cmd /c tts --text \"%TEXT%\" --model_name \"tts_models/en/ljspeech/tacotron2-DDC\" --out_path speech.wav --use_cuda True";
-        command = command.replace("%TEXT%", cleanedText);
 
-        System.out.println(command);
+        logger.info("cmd /c tts --text \"%TEXT%\" --model_name \"tts_models/en/ljspeech/tacotron2-DDC\" --out_path speech.wav --use_cuda True");
+
+        command = command.replace("%TEXT%", cleanedText);
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
@@ -22,13 +30,13 @@ public class TTS {
             String output = getOutput(process.getInputStream());
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                System.out.println("Command failed with exit code " + exitCode);
+                logger.error("Command failed with exit code " + exitCode);
             } else {
-                System.out.println("Command executed successfully");
+                logger.error("Command executed successfully");
             }
-            System.out.println("Output: " + output);
+            logger.error("Output: " + output);
         } catch (IOException | InterruptedException e) {
-            System.out.println("Failed to execute command: " + e.getMessage());
+            logger.error("Failed to execute command: " + e.getMessage());
         }
     }
 

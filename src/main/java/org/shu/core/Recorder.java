@@ -13,11 +13,7 @@ public class Recorder {
     private static final int CHANNELS = 1; // Mono channel
     private static final boolean SIGNED = true; // Signed samples
     private static final boolean BIG_ENDIAN = false; // Little-endian byte order
-
     private TargetDataLine targetDataLine;
-
-    public Recorder() {
-    }
 
     public void startRecording() {
         try {

@@ -1,11 +1,18 @@
 package org.shu.core;
 
+import org.apache.log4j.LogManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Whisper {
 
+    static {
+        Log4j.init();
+    }
+
+    private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
     private final static String timePattern = "\\[\\d{2}:\\d{2}.\\d{3} --> \\d{2}:\\d{2}.\\d{3}\\] ";
 
     public static String transcribe(String command) {
@@ -14,6 +21,7 @@ public class Whisper {
             // Create ProcessBuilder instance with the command
             ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "whisper " + command);
 
+            logger.info("cmd.exe /c whisper " + command);
             // Redirect the error stream to the standard output
             processBuilder.redirectErrorStream(true);
 
@@ -34,14 +42,12 @@ public class Whisper {
             int exitCode = process.waitFor();
 
             result = output.toString().replaceAll(timePattern, "");
-            System.out.println("here");
 
         } catch (IOException | InterruptedException e) {
-            System.out.println("error");
-            System.out.println(e.toString());
+            logger.error("Error transcribe() " + e);
             e.printStackTrace();
         }
         return result;
-        
+
     }
 }

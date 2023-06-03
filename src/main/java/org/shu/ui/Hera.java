@@ -10,12 +10,17 @@ import java.awt.event.WindowEvent;
 
 public class Hera {
     private JFrame frame;
-    private JButton button;
-
+    private JTextArea textArea;
+    private JButton editButton;
+    private Configuration config;
     private SystemTray systemTray;
     private TrayIcon trayIcon;
+
     public void create() {
-        frame = new JFrame("Simple GUI Application");
+        // Create the main frame
+        frame = new JFrame("My UI");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
 
         // Create a system tray icon
         if (SystemTray.isSupported()) {
@@ -44,22 +49,74 @@ public class Hera {
             trayIcon.setImageAutoSize(true);
         }
 
-        button = new JButton("Click me!");
-        button.addActionListener(new ActionListener() {
+        // Create the menu bar
+        JMenuBar menuBar = new JMenuBar();
+
+        // Create the file menu
+        JMenu fileMenu = new JMenu("File");
+
+        // Create the exit menu item
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "Button clicked!");
+                System.exit(0);
             }
         });
+        fileMenu.add(exitMenuItem);
 
-        frame.getContentPane().add(button, BorderLayout.CENTER);
-        frame.pack();
+        // Add the file menu to the menu bar
+        menuBar.add(fileMenu);
+
+        // Create the help menu
+        JMenu helpMenu = new JMenu("Help");
+
+        // Create the about menu item
+        JMenuItem aboutMenuItem = new JMenuItem("About");
+        aboutMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(frame, "My UI v1.0", "About My UI", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        helpMenu.add(aboutMenuItem);
+
+        // Add the help menu to the menu bar
+        menuBar.add(helpMenu);
+
+        // Set the menu bar for the frame
+        frame.setJMenuBar(menuBar);
+
+        // Create the text area
+        textArea = new JTextArea();
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding to the scroll pane
+        frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+        // Create the edit button
+        editButton = new JButton("Edit Parameters");
+        editButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openEditUI();
+            }
+        });
+        frame.getContentPane().add(editButton, BorderLayout.SOUTH);
+        // Create the configuration
+        config = new Configuration();
+
+        // Show the frame
+        frame.setVisible(true);
+
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 minimizeToTray();
             }
         });
-        frame.setVisible(true);
+    }
+
+
+    private void openEditUI() {
+        config.openUI();
     }
 
     private void minimizeToTray() {
@@ -73,5 +130,9 @@ public class Hera {
         } else {
             System.exit(0);
         }
+    }
+
+    public JTextArea getTextare() {
+        return this.textArea;
     }
 }

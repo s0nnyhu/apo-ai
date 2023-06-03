@@ -1,10 +1,16 @@
 package org.shu.core;
 
+import org.apache.log4j.LogManager;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
 public class Player {
 
+    static {
+        Log4j.init();
+    }
+
+    private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
     private final MediaPlayerFactory mediaPlayerFactory;
     private final MediaPlayer mediaPlayer;
 
@@ -20,6 +26,7 @@ public class Player {
         try {
             this.mediaPlayer.media().play(audioFilePath);
         } catch (Exception e) {
+            logger.error("Could not play " + audioFilePath + ": " + e);
             e.printStackTrace();
         }
     }
@@ -30,6 +37,7 @@ public class Player {
             this.mediaPlayer.release();
             this.mediaPlayerFactory.release();
         } catch (Exception e) {
+            logger.error("Could not stop audio: " + e);
             e.printStackTrace();
         }
     }

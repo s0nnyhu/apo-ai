@@ -2,12 +2,18 @@ package org.shu.core;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.log4j.LogManager;
 import org.shu.utils.HTTPClient;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ChatGPT {
+    static {
+        Log4j.init();
+    }
+
+    private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
     Dotenv dotenv = Dotenv.load();
     private String API_ENDPOINT = dotenv.get("API_ENDPOINT_CHATGPT");
     private String API_TOKEN = dotenv.get("API_TOKEN_CHATGPT");
@@ -39,7 +45,7 @@ public class ChatGPT {
         try {
             response = HTTPClient.post(String.format("%s/v1/chat/completions", API_ENDPOINT), body, headers);
         } catch (Exception e) {
-            System.out.println("[ChatGPT] Error occured " + e);
+            logger.error("Error occured in ask(..):" + e);
         }
         return response;
     }

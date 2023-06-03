@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
@@ -15,7 +14,7 @@ import java.util.logging.Logger;
 public class Commander implements NativeKeyListener {
 
     static {
-        init();
+        Log4j.init();
     }
 
     private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
@@ -27,9 +26,6 @@ public class Commander implements NativeKeyListener {
     private ChatGPT chatGPT;
     private Player player;
 
-    private static void init() {
-        PropertyConfigurator.configure("log4j.properties");
-    }
 
     public Commander() {
         logger.info("Commander initialized");
