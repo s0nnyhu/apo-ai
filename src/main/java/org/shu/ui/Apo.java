@@ -6,10 +6,7 @@ import org.apache.log4j.PatternLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 public class Apo {
     private static final Logger logger = Logger.getLogger(Apo.class);
@@ -52,6 +49,16 @@ public class Apo {
             trayPopupMenu.add(exitMenuItem);
             trayIcon = new TrayIcon(trayImage, "APO AI", trayPopupMenu);
             trayIcon.setImageAutoSize(true);
+
+            trayIcon.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        frame.setVisible(true);
+                        systemTray.remove(trayIcon);
+                    }
+                }
+            });
         }
 
         // Create the menu bar
