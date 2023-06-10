@@ -1,6 +1,5 @@
 package org.shu.core;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.shu.utils.HTTPClient;
 
 import java.io.FileOutputStream;
@@ -8,10 +7,10 @@ import java.io.InputStream;
 import java.util.Map;
 
 public class ElevenlabsClient {
-    Dotenv dotenv = Dotenv.load();
 
-    private final String API_ENDPOINT = dotenv.get("API_ENDPOINT_ELEVENLABS");
-    private final String API_TOKEN = dotenv.get("API_TOKEN_ELEVENLABS");
+
+    private final String API_ENDPOINT = "";
+    private final String API_TOKEN = "";
     ;
 
     public ElevenlabsClient() {
