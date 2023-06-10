@@ -50,7 +50,7 @@ public class Apo {
             exitMenuItem.addActionListener(trayActionListener);
             trayPopupMenu.add(openMenuItem);
             trayPopupMenu.add(exitMenuItem);
-            trayIcon = new TrayIcon(trayImage, "Simple GUI Application", trayPopupMenu);
+            trayIcon = new TrayIcon(trayImage, "APO AI", trayPopupMenu);
             trayIcon.setImageAutoSize(true);
         }
 
