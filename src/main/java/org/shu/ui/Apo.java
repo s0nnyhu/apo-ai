@@ -23,7 +23,7 @@ public class Apo {
     public void create() {
 
         // Create the main frame
-        frame = new JFrame("My UI");
+        frame = new JFrame("Apo AI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(500, 500);
 
@@ -79,7 +79,7 @@ public class Apo {
         JMenuItem aboutMenuItem = new JMenuItem("About");
         aboutMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(frame, "My UI v1.0", "About My UI", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Apo AI v1.0", "A vocal ChatGPT (only english for now). Its uses Whisper + ChatGPT + TTS tocatron2 python script", JOptionPane.INFORMATION_MESSAGE);
             }
         });
         helpMenu.add(aboutMenuItem);
@@ -142,7 +142,4 @@ public class Apo {
         }
     }
 
-    public JTextArea getTextArea() {
-        return this.textArea;
-    }
 }

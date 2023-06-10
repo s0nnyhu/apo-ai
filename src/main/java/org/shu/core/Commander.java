@@ -7,7 +7,10 @@ import org.apache.log4j.LogManager;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
+import org.shu.utils.Notification;
 
+import java.awt.*;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 
 public class Commander implements NativeKeyListener {
@@ -105,6 +108,12 @@ public class Commander implements NativeKeyListener {
 
 //            elevenlabsClient.tts(content);
 //            player.play("response.wav");
+
+            try {
+                Notification.displayTray(content);
+            } catch (AWTException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
 
             TTS.toAudio(content);
             player.play(System.getenv("TEMP") + "\\speech.wav");

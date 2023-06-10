@@ -41,6 +41,7 @@ public class TextAreaAppender extends AppenderSkeleton {
         if (textArea != null) {
             String message = this.layout.format(event);
             textArea.append(message);
+            textArea.setCaretPosition(textArea.getDocument().getLength());
         }
     }
 }
