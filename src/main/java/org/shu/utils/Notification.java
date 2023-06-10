@@ -20,7 +20,7 @@ public class Notification {
         trayIcon.setToolTip("System tray icon demo");
         tray.add(trayIcon);
 
-        trayIcon.displayMessage("Hera", text, TrayIcon.MessageType.INFO);
+        trayIcon.displayMessage("Apo AI", text, TrayIcon.MessageType.INFO);
 
     }
 }
