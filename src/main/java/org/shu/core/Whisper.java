@@ -19,7 +19,7 @@ public class Whisper {
         String result = null;
         try {
             // Create ProcessBuilder instance with the command
-            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "whisper " + command);
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd.exe", "/c", "whisper " + command + " --output_format", "txt", "--output_dir", System.getenv("TEMP"));
 
             logger.info("cmd.exe /c whisper " + command);
             // Redirect the error stream to the standard output

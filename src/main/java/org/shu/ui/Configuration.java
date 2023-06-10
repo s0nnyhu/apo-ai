@@ -1,10 +1,13 @@
 package org.shu.ui;
 
+import org.shu.core.ChatGPT;
+import org.shu.core.ConnectionManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.util.HashMap;
 
 public class Configuration {
     private JTextField apiElevenLabsEndpointField;
@@ -23,37 +26,14 @@ public class Configuration {
         promptChatGptField = new JTextField("You are an helpful assistant.");
         modelChatGptField = new JTextField("gpt-3.5-turbo");
 
-        try {
-            // Connect to the database
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:config.db");
-            Statement stmt = conn.createStatement();
-            // Create the table if it does not exist
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, apiElevenLabsEndpoint TEXT, apiElevenLabsToken TEXT, apiChatGptEndpoint TEXT, apiChatGptToken TEXT, promptChatGpt TEXT, modelChatGpt TEXT)");
-            // Query the table for the values and set the fields
-            ResultSet rs = stmt.executeQuery("SELECT * FROM config WHERE id = 1");
-            if (rs.next()) {
-                apiElevenLabsEndpointField.setText(rs.getString("apiElevenLabsEndpoint"));
-                apiElevenLabsTokenField.setText(rs.getString("apiElevenLabsToken"));
-                apiChatGptEndpointField.setText(rs.getString("apiChatGptEndpoint"));
-                apiChatGptTokenField.setText(rs.getString("apiChatGptToken"));
-                promptChatGptField.setText(rs.getString("promptChatGpt"));
-                modelChatGptField.setText(rs.getString("modelChatGpt"));
-            }
-            // Close the database connection
-            rs.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            // If there was an error connecting to the database or querying the table,
-            // set the fields to empty values
-            apiElevenLabsEndpointField.setText("");
-            apiElevenLabsTokenField.setText("");
-            apiChatGptEndpointField.setText("");
-            apiChatGptTokenField.setText("");
-            promptChatGptField.setText("");
-            modelChatGptField.setText("");
-        }
+        ConnectionManager connectionManager = ConnectionManager.getInstance();
+        HashMap<String, String> config = connectionManager.getConfiguration();
+        apiElevenLabsEndpointField.setText(config.get("apiElevenLabsEndpoint"));
+        apiElevenLabsTokenField.setText(config.get("apiElevenLabsToken"));
+        apiChatGptEndpointField.setText(config.get("apiChatGptEndpoint"));
+        apiChatGptTokenField.setText(config.get("apiChatGptToken"));
+        promptChatGptField.setText(config.get("promptChatGpt"));
+        modelChatGptField.setText(config.get("modelChatGpt"));
     }
 
     public void openUI() {
@@ -98,34 +78,17 @@ public class Configuration {
 
     private void saveConfiguration() {
         // Save the values from the fields to an SQLite database
-        String apiElevenLabsEndpoint = apiElevenLabsEndpointField.getText();
-        String apiElevenLabsToken = apiElevenLabsTokenField.getText();
-        String apiChatGptEndpoint = apiChatGptEndpointField.getText();
-        String apiChatGptToken = apiChatGptTokenField.getText();
-        String promptChatGpt = promptChatGptField.getText();
-        String modelChatGpt = modelChatGptField.getText();
-        try {
-            // Connect to the database
-            Connection conn = DriverManager.getConnection("jdbc:sqlite:config.db");
-            Statement stmt = conn.createStatement();
-            // Create the table if it does not exist
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS config (id INTEGER PRIMARY KEY, apiElevenLabsEndpoint TEXT, apiElevenLabsToken TEXT, apiChatGptEndpoint TEXT, apiChatGptToken TEXT, promptChatGpt TEXT, modelChatGpt TEXT)");
-            // Insert or update the data in the table
-            PreparedStatement pstmt = conn.prepareStatement("INSERT OR REPLACE INTO config (id, apiElevenLabsEndpoint, apiElevenLabsToken, apiChatGptEndpoint, apiChatGptToken, promptChatGpt, modelChatGpt) VALUES (?, ?, ?, ?, ?, ?, ?)");
-            pstmt.setInt(1, 1);
-            pstmt.setString(2, apiElevenLabsEndpoint);
-            pstmt.setString(3, apiElevenLabsToken);
-            pstmt.setString(4, apiChatGptEndpoint);
-            pstmt.setString(5, apiChatGptToken);
-            pstmt.setString(6, promptChatGpt);
-            pstmt.setString(7, modelChatGpt);
-            pstmt.executeUpdate();
-            // Close the database connection
-            pstmt.close();
-            stmt.close();
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        ConnectionManager connectionManager = ConnectionManager.getInstance();
+        connectionManager.saveConfiguration(apiElevenLabsEndpointField.getText(),
+                apiElevenLabsTokenField.getText(),
+                apiChatGptEndpointField.getText(),
+                apiChatGptTokenField.getText(),
+                promptChatGptField.getText(),
+                modelChatGptField.getText());
+        //Reload ChatGPT
+        ChatGPT.setModel(promptChatGptField.getText());
+        ChatGPT.setApiToken(apiChatGptTokenField.getText());
+        ChatGPT.setApiEndpoint(apiChatGptEndpointField.getText());
+        ChatGPT.setPrompt(promptChatGptField.getText());
     }
 }

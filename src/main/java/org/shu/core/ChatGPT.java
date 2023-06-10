@@ -1,6 +1,5 @@
 package org.shu.core;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.LogManager;
 import org.shu.utils.HTTPClient;
@@ -14,19 +13,35 @@ public class ChatGPT {
     }
 
     private static org.apache.log4j.Logger logger = LogManager.getLogger(Commander.class.getName());
-    Dotenv dotenv = Dotenv.load();
-    private String API_ENDPOINT = dotenv.get("API_ENDPOINT_CHATGPT");
-    private String API_TOKEN = dotenv.get("API_TOKEN_CHATGPT");
-    private String PROMPT = "You are an helpful assistant.";
-    private String MODEL = "gpt-3.5-turbo";
+    private static String API_ENDPOINT;
+    private static String API_TOKEN;
+    private static String PROMPT;
+    private static String MODEL;
 
     private final int MAX_TOKENS = 3500;
 
-    public void setPrompt(String prompt) {
+
+    public ChatGPT(String apiEndpoint, String apiToken, String prompt, String model) {
+        API_ENDPOINT = apiEndpoint;
+        API_TOKEN = apiToken;
+        PROMPT = prompt;
+        MODEL = model;
     }
 
-    public void setModel(String model) {
-        model = model;
+    public static void setApiEndpoint(String apiEndpoint) {
+        API_ENDPOINT = apiEndpoint;
+    }
+
+    public static void setApiToken(String apiToken) {
+        API_TOKEN = apiToken;
+    }
+
+    public static void setPrompt(String prompt) {
+        PROMPT = prompt;
+    }
+
+    public static void setModel(String model) {
+        MODEL = model;
     }
 
     public String ask(String text) {
@@ -43,10 +58,15 @@ public class ChatGPT {
 
         String response = null;
         try {
+            logger.info("[REQUEST] calling" + String.format("%s/v1/chat/completions", API_ENDPOINT));
+            logger.info("[REQUEST] with headers " + headers);
+            logger.info("[REQUEST] with body " + body);
             response = HTTPClient.post(String.format("%s/v1/chat/completions", API_ENDPOINT), body, headers);
         } catch (Exception e) {
             logger.error("Error occured in ask(..):" + e);
         }
+
+        logger.info("[RESPONSE] " + response);
         return response;
     }
 

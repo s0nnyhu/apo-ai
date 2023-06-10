@@ -17,12 +17,11 @@ public class TTS {
 
     public static void toAudio(String text) {
         String cleanedText = text.replace("\"", "\\\"").replace("\n", "");
-        System.out.println(cleanedText);
-        String command = "cmd /c tts --text \"%TEXT%\" --model_name \"tts_models/en/ljspeech/tacotron2-DDC\" --out_path speech.wav --use_cuda True";
-
-        logger.info("cmd /c tts --text \"%TEXT%\" --model_name \"tts_models/en/ljspeech/tacotron2-DDC\" --out_path speech.wav --use_cuda True");
+        String command = "cmd /c tts --text \"%TEXT%\" --model_name \"tts_models/en/ljspeech/tacotron2-DDC\" --out_path " + System.getenv("TEMP") + "\\speech.wav --use_cuda True";
 
         command = command.replace("%TEXT%", cleanedText);
+
+        logger.info(command);
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));

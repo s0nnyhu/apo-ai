@@ -8,8 +8,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
 
 public class Commander implements NativeKeyListener {
 
@@ -33,9 +32,11 @@ public class Commander implements NativeKeyListener {
         isAltKeyPressed = false;
         isQKeyPressed = false;
 
+        ConnectionManager connectionManager = ConnectionManager.getInstance();
+        HashMap<String, String> config = connectionManager.getConfiguration();
         recorder = new Recorder();
         elevenlabsClient = new ElevenlabsClient();
-        chatGPT = new ChatGPT();
+        chatGPT = new ChatGPT(config.get("apiChatGptEndpoint"), config.get("apiChatGptToken"), config.get("promptChatGpt"), config.get("modelChatGpt"));
         player = new Player();
 
         try {
@@ -74,6 +75,9 @@ public class Commander implements NativeKeyListener {
         if (nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_ALT_L) {
             // Reset the flag since Alt key is released
             isAltKeyPressed = false;
+        }
+        if (isAltKeyPressed && nativeKeyEvent.getKeyCode() == NativeKeyEvent.VC_Q) {
+            // Perform your desired action here
             isRecording = false;
             logger.info("Stop recording");
             recorder.stopRecording();
@@ -82,10 +86,9 @@ public class Commander implements NativeKeyListener {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            String request = Whisper.transcribe("recording.wav --model medium --language en --device cuda");
+            String request = Whisper.transcribe(System.getenv("TEMP") + "\\recording.wav --model medium --language en --device cuda");
 
 //            request = request.split("\n")[2];
-
 
             String response = chatGPT.ask(request);
             System.out.println(response);
@@ -104,7 +107,8 @@ public class Commander implements NativeKeyListener {
 //            player.play("response.wav");
 
             TTS.toAudio(content);
-            player.play("speech.wav");
+            player.play(System.getenv("TEMP") + "\\speech.wav");
+
         }
     }
 
@@ -112,10 +116,4 @@ public class Commander implements NativeKeyListener {
     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(Level.OFF);
-        Commander c = new Commander();
-
-    }
 }

@@ -1,6 +1,9 @@
 package org.shu.ui;
 
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,7 +11,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class Hera {
+public class Apo {
+    private static final Logger logger = Logger.getLogger(Apo.class);
     private JFrame frame;
     private JTextArea textArea;
     private JButton editButton;
@@ -17,6 +21,7 @@ public class Hera {
     private TrayIcon trayIcon;
 
     public void create() {
+
         // Create the main frame
         frame = new JFrame("My UI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,6 +97,11 @@ public class Hera {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding to the scroll pane
         frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
+        TextAreaAppender.setTextArea(textArea);
+        TextAreaAppender appender = new TextAreaAppender();
+        appender.setLayout(new PatternLayout("%d{ISO8601} [%t] %-5p %c %x - %m%n"));
+        logger.addAppender(appender);
+
         // Create the edit button
         editButton = new JButton("Edit Parameters");
         editButton.addActionListener(new ActionListener() {
@@ -132,7 +142,7 @@ public class Hera {
         }
     }
 
-    public JTextArea getTextare() {
+    public JTextArea getTextArea() {
         return this.textArea;
     }
 }

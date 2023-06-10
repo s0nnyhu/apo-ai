@@ -28,7 +28,7 @@ public class Recorder {
             Thread recordingThread = new Thread(() -> {
                 try {
                     AudioInputStream audioInputStream = new AudioInputStream(targetDataLine);
-                    AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new java.io.File("recording.wav"));
+                    AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new java.io.File(System.getenv("TEMP") + "\\recording.wav"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
