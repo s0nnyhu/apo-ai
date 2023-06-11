@@ -13,14 +13,20 @@ public class Notification {
         //Alternative (if the icon is on the classpath):
         //Image image = Toolkit.getDefaultToolkit().createImage(getClass().getResource("icon.png"));
 
-        TrayIcon trayIcon = new TrayIcon(image, "Java AWT Tray Demo");
+        TrayIcon trayIcon = new TrayIcon(image);
         //Let the system resize the image if needed
         trayIcon.setImageAutoSize(true);
         //Set tooltip text for the tray icon
-        trayIcon.setToolTip("System tray icon demo");
+        trayIcon.setToolTip("Apo AI");
         tray.add(trayIcon);
 
         trayIcon.displayMessage("Apo AI", text, TrayIcon.MessageType.INFO);
-
+        // Wait for a few seconds before removing the icon
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        tray.remove(trayIcon);
     }
 }
